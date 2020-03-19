@@ -6,12 +6,11 @@ output:
     keep_md: yes
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE)
-```
+
 
 Load libraries and set theme.
-```{r}
+
+```r
 library(tidyverse)
 library(lubridate)
 library(gganimate)
@@ -24,7 +23,8 @@ The data are from this [github repo](https://github.com/CSSEGISandData/COVID-19/
 
 Read in the data and create a state abbreviation to full state name crosswalk. The data from github are updated daily.
 
-```{r}
+
+```r
 covid <- read_csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv")
 
 states <- tibble(state = c(state.name, "District of Columbia"),
@@ -34,7 +34,8 @@ states <- tibble(state = c(state.name, "District of Columbia"),
 
 Filter to data in the US and make a long dataset with `date` and `cases` as columns. Before 03/10/2020, data was collected at the county level but starting on 03/10/202, it was collected at the state level. So, those date ranges are summarized separately and then all the data are recombined. Remove `Diamond Princess` and `Grand Princess` cases.
 
-```{r}
+
+```r
 covid_long <- covid %>% 
   filter(`Country/Region` == "US") %>% 
   pivot_longer(cols = 5:ncol(covid), names_to = "date", values_to = "cases") %>% 
@@ -70,7 +71,8 @@ covid_long_all <- covid_long_early %>%
 
 Create a `gganimate` plot that shows the number of cases over time for each state. 
 
-```{r}
+
+```r
 covid_anim <- covid_long_all %>% 
   ggplot(aes(x = date, y = cases, group = state_ordered)) +
   geom_line() + 
@@ -83,20 +85,25 @@ covid_anim <- covid_long_all %>%
 
 Create the animation (this takes a bit of time to run). Use code chunk option `eval=FALSE` so this isn't evaluated when the file is knit. 
 
-```{r, eval=FALSE}
+
+```r
 animate(covid_anim, nframes = 100, duration = 30)
 ```
 
 Save the animation.
-```{r, eval=FALSE}
+
+```r
 anim_save("covid_us.gif")
 ```
 
 
 Reload the animation so we can see it here. 
-```{r}
+
+```r
 knitr::include_graphics("covid_us.gif")
 ```
+
+![](covid_us.gif)<!-- -->
 
 
 
