@@ -1,0 +1,39 @@
+---
+title: "US covid_19 data from NYT"
+author: "Lisa Lendway"
+output: 
+  html_document:
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+Load libraries and set theme.
+```{r}
+library(tidyverse)
+library(lubridate)
+library(gganimate)
+library(knitr)
+theme_set(theme_minimal())
+```
+
+The data come from the New York Times covid-19 data [github repo](https://github.com/nytimes/covid-19-data).
+
+```{r}
+covid19 <- read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
+```
+
+Add a column for the cumulative number of cases.
+```{r}
+#covid19_cum <- 
+
+covid19 %>% 
+  group_by(state) %>% 
+  mutate(cum_cases = cumsum(cases),
+         cum_deaths = cumsum(deaths), 
+         cum_cases_over50 = cum_cases > 50) %>% 
+  arrange(state, date)
+```
+
