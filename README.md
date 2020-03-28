@@ -4,4 +4,4 @@ Like many peole, I have been stressed out about the covid-19 pandemic. Somehow a
 
 See the covid_US_updated.md file for the most up to date information. I switched to using data from the NYT. The covid_cases_US.md file is out of date. 
 
-The app allows you to choose states/territories and compare curves.
+The app (in the shiny_app folder) allows you to choose states/territories and compare curves.
