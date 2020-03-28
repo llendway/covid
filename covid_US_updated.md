@@ -6,12 +6,11 @@ output:
     keep_md: yes
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE)
-```
+
 
 Load libraries and set theme.
-```{r}
+
+```r
 library(tidyverse)
 library(lubridate)
 library(gganimate)
@@ -21,12 +20,14 @@ theme_set(theme_minimal())
 
 The data come from the New York Times covid-19 data [github repo](https://github.com/nytimes/covid-19-data).
 
-```{r}
+
+```r
 covid19 <- read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
 ```
 
 Create a variable for days since the number of cases was over 20.
-```{r}
+
+```r
 covid19_comp_date <- covid19 %>% 
   group_by(state) %>% 
   arrange(date) %>% 
@@ -40,7 +41,8 @@ covid19_comp_date <- covid19 %>%
 
 Create a `gganimate` plot that shows the number of cases over time for each state. 
 
-```{r}
+
+```r
 covid19_anim <- covid19_comp_date %>% 
   ggplot(aes(x = days_since_first, y = cases, group = state)) +
   geom_line() + 
@@ -56,16 +58,21 @@ covid19_anim <- covid19_comp_date %>%
 
 Create the animation (this takes a bit of time to run). Use code chunk option `eval=FALSE` so this isn't evaluated when the file is knit. 
 
-```{r, eval=FALSE}
+
+```r
 animate(covid19_anim, nframes = 100, duration = 30)
 ```
 
 Save the animation.
-```{r, eval=FALSE}
+
+```r
 anim_save("covid19_us.gif")
 ```
 
 Reload the animation so we can see it here. 
-```{r}
+
+```r
 knitr::include_graphics("covid19_us.gif")
 ```
+
+![](covid19_us.gif)<!-- -->
