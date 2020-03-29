@@ -41,9 +41,11 @@ covid19_comp_date <- covid19 %>%
 Create a `gganimate` plot that shows the number of cases over time for each state. 
 
 ```{r}
+max_days <- max(covid19_comp_date$days_since_first)
 covid19_anim <- covid19_comp_date %>% 
   ggplot(aes(x = days_since_first, y = cases, group = state)) +
   geom_line() + 
+  coord_cartesian(xlim = c(-10, max_days)) +
   scale_y_log10() +
   labs(title = 'State/Territory: {closest_state}', 
        x = "Days since # of cases greater than 20", 
