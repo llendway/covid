@@ -1,0 +1,12 @@
+name: covid-19_app
+title: covid-19_app
+username:
+account: lisalendway
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2015715
+bundleId: 2939689
+url: https://lisalendway.shinyapps.io/covid-19_app/
+when: 1585494948.01688
+asMultiple: FALSE
+asStatic: FALSE

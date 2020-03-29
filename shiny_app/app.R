@@ -17,6 +17,8 @@ state_terr_name <- covid19_comp_date %>%
   arrange(state) %>% 
   pull()
 
+max_days <- max(covid19_comp_date$days_since_over20)
+
 ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(p("Choose US States/Territories to compare their # of cases of covid-19."),
@@ -43,6 +45,7 @@ server <- function(input, output) {
                  group = state, 
                  color = state)) +
       geom_line() +
+      coord_cartesian(xlim = c(-10, max_days)) +
       labs(x = "Days since # of cases greater than 20", 
            y = "Cumulative Cases") +
       theme_minimal()
