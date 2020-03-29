@@ -110,3 +110,81 @@ Reload the animation so we can see it here.
 ```{r}
 knitr::include_graphics("covid19_us.gif")
 ```
+
+Add an animation that shows counts by state over time. First, do some cleaning of the data and add static plot.
+
+```{r}
+covid_data_for_barplot <- covid19_comp_date %>% 
+  ungroup() %>% 
+  filter(date >= mdy("02/28/2020")) %>% 
+  group_by(date) %>% 
+  mutate(rank = row_number(desc(cases))) %>% 
+  arrange(date, rank) %>% 
+  ungroup() %>% 
+  filter(rank <= 10)
+
+static_plot <- covid_data_for_barplot %>% 
+  ggplot(aes(x = rank, group = state, 
+             fill = as.factor(state), 
+             color = as.factor(state))) +
+  geom_tile(aes(y = cases/2,
+                height = cases,
+                width = 0.9), alpha = 0.8, color = NA) +
+  geom_text(aes(y = 0, label = paste(state, " ")), 
+            vjust = 0.2, hjust = 1) +
+  geom_text(aes(y = cases, label = as.character(cases), hjust=0)) +
+  coord_flip(clip = "off", expand = FALSE) +
+  scale_y_continuous(labels = scales::comma) +
+  scale_x_reverse() +
+  scale_color_viridis_d() +
+  scale_fill_viridis_d() +
+  guides(color = FALSE, fill = FALSE)+
+  theme(axis.line=element_blank(),
+        axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks=element_blank(),
+        axis.title.x=element_blank(),
+         axis.title.y=element_blank(),
+        legend.position="none",
+        panel.background=element_blank(),
+        panel.border=element_blank(),
+        panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        panel.grid.major.x = element_line( size=.1, color="grey" ),
+        panel.grid.minor.x = element_line( size=.1, color="grey" ),
+        plot.title = element_text(face = 'bold', size = 20),
+        plot.subtitle = element_text(size = 14),
+        plot.caption =element_text(size=10, face="italic", color="grey"),
+        plot.background=element_blank(),
+       plot.margin = margin(2,2, 2, 4, "cm"))
+```
+
+
+Animation
+```{r, eval=FALSE}
+covid_bar_anim <-
+  static_plot + 
+  transition_states(date, 
+                    transition_length = 4, 
+                    state_length = 3)  +
+  ease_aes('cubic-in-out') +
+  view_follow(fixed_x = TRUE)  +
+  labs(title = 'Date : {closest_state}',  
+       subtitle  =  "Count of Covid-19 cases: Top 10 States ",
+       caption = "data source: https://github.com/nytimes/covid-19-data")
+
+animate(covid_bar_anim, nframes = 100, duration = 30)
+```
+
+Save the animation.
+```{r, eval=FALSE}
+anim_save("covid_us_barplot.gif")
+```
+
+Reload the animation so we can see it here. 
+```{r}
+knitr::include_graphics("covid_us_barplot.gif")
+```
+
+
+
