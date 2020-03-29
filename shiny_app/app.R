@@ -18,13 +18,19 @@ state_terr_name <- covid19_comp_date %>%
   pull()
 
 ui <- fluidPage(
-  selectInput("state", "US State/Territory", 
-              choices = state_terr_name, 
-              multiple = TRUE),
-  checkboxInput("log", "Plot cases on log scale",
-                value = FALSE),
-  submitButton(text = "Compare States/Territories"),
-  plotOutput(outputId = "covid_comp")
+  sidebarLayout(
+    sidebarPanel(
+      selectInput("state", "US State/Territory", 
+                  choices = state_terr_name, 
+                  multiple = TRUE),
+      checkboxInput("log", "Plot cases on log scale",
+                    value = FALSE),
+      submitButton(text = "Compare States/Territories")
+    ),
+    mainPanel(
+      plotOutput(outputId = "covid_comp")
+    )
+  )
 )
 
 server <- function(input, output) {
@@ -38,12 +44,12 @@ server <- function(input, output) {
       labs(x = "Days since # of cases greater than 20", 
            y = "Cumulative Cases") +
       theme_minimal()
-
-      if(input$log)
+    
+    if(input$log)
       covid_plot <- covid_plot +  scale_y_log10()
-      
-      return(covid_plot)
-      
+    
+    return(covid_plot)
+    
   })
 }
 
