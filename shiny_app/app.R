@@ -21,22 +21,28 @@ ui <- fluidPage(
   selectInput("state", "US State/Territory", 
               choices = state_terr_name, 
               multiple = TRUE),
+  checkboxInput("log", "Plot cases on log scale",
+                value = FALSE),
   submitButton(text = "Compare States/Territories"),
   plotOutput(outputId = "covid_comp")
 )
 
 server <- function(input, output) {
   output$covid_comp <- renderPlot({
-    covid19_comp_date %>% 
+    covid_plot <- covid19_comp_date %>% 
       filter(state %in% input$state) %>% 
       ggplot(aes(x = days_since_first, y = cases, 
                  group = state, 
                  color = state)) +
       geom_line() +
-      scale_y_log10() +
       labs(x = "Days since # of cases greater than 20", 
            y = "Cumulative Cases") +
       theme_minimal()
+
+      if(input$log)
+      covid_plot <- covid_plot +  scale_y_log10()
+      
+      return(covid_plot)
       
   })
 }
