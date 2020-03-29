@@ -82,7 +82,8 @@ covid19_anim <- covid19_comp_date %>%
   scale_y_log10() +
   labs(title = 'State/Territory: {closest_state}', 
        x = "Days since # of cases greater than 20", 
-       y = "Cumulative Cases") +
+       y = "Cumulative Cases",
+       caption = "data source: https://github.com/nytimes/covid-19-data") +
   # transition_states(states = fct_reorder(as.factor(state), 
   #                                        cases, 
   #                                        max, 
