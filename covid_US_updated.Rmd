@@ -53,17 +53,17 @@ for_labels <- covid19_comp_date %>%
 ```{r, eval=FALSE}
 #test plots
 covid19_comp_date %>% 
-  ggplot(aes(x = days_since_over20, y = cases, group = state)) +
+  ggplot(aes(x = days_since_over20, y = cases, group = state_ordered)) +
   geom_line() + 
   coord_cartesian(xlim = c(-10, max_days)) +
   geom_text(aes(x = max_days_since20, 
                 y = max_case, 
-                label = state),
+                label = state_ordered),
             color = "gray",
             data = for_labels) +
   scale_y_log10() +
-#  facet_geo(~ state) #returns an error
-  facet_wrap(~ state)
+#  facet_geo(~ state_ordered) #returns an error
+  facet_wrap(~ state_ordered)
 ```
 
 
