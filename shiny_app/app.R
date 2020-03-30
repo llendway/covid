@@ -9,7 +9,11 @@ covid19_comp_date <- covid19 %>%
   arrange(date) %>% 
   mutate(cases_over20 = cases > 20,
          min_cases_over20 = which.max(cases_over20),
-         days_since_over20 = row_number() - min_cases_over20)
+         days_since_over20 = row_number() - min_cases_over20) %>% 
+  ungroup() %>% 
+  mutate(state_ordered = fct_reorder2(state,
+                                      date,
+                                      cases))
 
 
 state_terr_name <- covid19_comp_date %>% 
