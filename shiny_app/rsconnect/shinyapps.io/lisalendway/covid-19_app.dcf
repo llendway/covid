@@ -5,8 +5,8 @@ account: lisalendway
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2015715
-bundleId: 2948516
+bundleId: 2948584
 url: https://lisalendway.shinyapps.io/covid-19_app/
-when: 1585656665.5415
+when: 1585657852.37118
 asMultiple: FALSE
 asStatic: FALSE
