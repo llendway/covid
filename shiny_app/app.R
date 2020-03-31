@@ -52,10 +52,12 @@ server <- function(input, output) {
       coord_cartesian(xlim = c(-10, max_days)) +
       labs(x = "Days since # of cases greater than 20", 
            y = "Cumulative Cases") +
+      scale_y_continuous(labels = scales::comma) +
       theme_minimal()
     
     if(input$log)
-      covid_plot <- covid_plot +  scale_y_log10()
+      covid_plot <- covid_plot +  
+        scale_y_log10(labels = scales::comma)
     
     return(covid_plot)
     
