@@ -79,7 +79,10 @@ covid19_anim <- covid19_comp_date %>%
                 y = max_case, 
                 label = state_ordered),
             data = for_labels) +
-  scale_y_log10() +
+   scale_y_log10(breaks = scales::trans_breaks("log10",
+                                               function(x) 10^x),
+                 labels = scales::comma) + 
+  annotation_logticks(sides = "l") +
   labs(title = 'State/Territory: {closest_state}', 
        x = "Days since # of cases greater than 20", 
        y = "Cumulative Cases",
