@@ -57,7 +57,8 @@ server <- function(input, output) {
     
     if(input$log)
       covid_plot <- covid_plot +  
-        scale_y_log10(labels = scales::comma)
+        scale_y_log10(labels = scales::comma) +
+        annotation_logticks(sides = "l")
     
     return(covid_plot)
     
