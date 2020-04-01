@@ -83,7 +83,7 @@ covid19_anim <- covid19_comp_date %>%
                                                function(x) 10^x),
                  labels = scales::comma) + 
   annotation_logticks(sides = "l") +
-  labs(title = 'State/Territory: {closest_state}', 
+  labs(#title = 'State/Territory: {closest_state}', 
        x = "Days since # of cases greater than 20", 
        y = "Cumulative Cases",
        caption = "data source: https://github.com/nytimes/covid-19-data") +
