@@ -220,6 +220,7 @@ trajectory_animated <- trajectory_data %>%
                 labels = scales::comma) +
   labs(x = "Total Cases", 
        y = "New cases (in past 3 days)",
+       title = 'Date: {frame_along}',
        caption = "data source: https://github.com/nytimes/covid-19-data, \n inspired by: https://aatishb.com/covidtrends/") +
   transition_reveal(date)
 ```
