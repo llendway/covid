@@ -32,8 +32,9 @@ Create a variable for days since the number of cases was over 20. Also create so
 covid19_comp_date <- covid19 %>% 
   group_by(state) %>% 
   arrange(date) %>% 
-  mutate(cases_over20 = cases > 20,
-         min_cases_over20 = which.max(cases_over20),
+  mutate(cases_over20 = cases > 20) %>% 
+  filter(sum(cases_over20) > 0) %>% 
+  mutate(min_cases_over20 = which.max(cases_over20),
          days_since_over20 = row_number() - min_cases_over20) %>% 
   ungroup() %>% 
   mutate(state_ordered = fct_reorder2(state,
@@ -183,6 +184,46 @@ Reload the animation so we can see it here.
 ```{r}
 knitr::include_graphics("covid_us_barplot.gif")
 ```
+
+# Trajectory graph
+
+Inspired by [Aatish Bhatia's](https://aatishb.com/covidtrends/) graph.
+
+
+```{r}
+
+trajectory_data <- covid19_comp_date %>% 
+  group_by(state_ordered) %>% 
+  mutate(cases_lag_3day = lag(cases, 3, order_by = date)) %>% 
+#  select(date, state_ordered, cases, cases_lag_3day) %>% 
+  ungroup() %>% 
+  filter(days_since_over20 >= 0) %>% 
+  replace_na(list(cases_lag_3day = 0)) %>% 
+  mutate(new_cases_3day = cases - cases_lag_3day) %>% 
+  arrange(state_ordered, date)
+
+trajectory_data
+```
+
+```{r}
+trajectory_data %>% 
+  ggplot(aes(x = cases, y = new_cases_3day, 
+             group = state_ordered)) +
+  geom_path() +
+   scale_y_log10(breaks = scales::trans_breaks("log10",
+                                               function(x) 10^x),
+                 labels = scales::comma) + 
+   scale_x_log10(breaks = scales::trans_breaks("log10",
+                                               function(x) 10^x),
+                 labels = scales::comma)
+```
+
+
+
+
+
+
+
 
 
 
