@@ -33,8 +33,9 @@ Create a variable for days since the number of cases was over 20. Also create so
 covid19_comp_date <- covid19 %>% 
   group_by(state) %>% 
   arrange(date) %>% 
-  mutate(cases_over20 = cases > 20,
-         min_cases_over20 = which.max(cases_over20),
+  mutate(cases_over20 = cases > 20) %>% 
+  filter(sum(cases_over20) > 0) %>% 
+  mutate(min_cases_over20 = which.max(cases_over20),
          days_since_over20 = row_number() - min_cases_over20) %>% 
   ungroup() %>% 
   mutate(state_ordered = fct_reorder2(state,
@@ -196,6 +197,86 @@ knitr::include_graphics("covid_us_barplot.gif")
 ```
 
 ![](covid_us_barplot.gif)<!-- -->
+
+# Trajectory graph
+
+Inspired by [Aatish Bhatia's](https://aatishb.com/covidtrends/) graph.
+
+
+```r
+trajectory_data <- covid19_comp_date %>% 
+  group_by(state_ordered) %>% 
+  mutate(cases_lag_3day = lag(cases, 3, order_by = date)) %>% 
+#  select(date, state_ordered, cases, cases_lag_3day) %>% 
+  ungroup() %>% 
+  filter(days_since_over20 >= 0) %>% 
+  replace_na(list(cases_lag_3day = 0)) %>% 
+  mutate(new_cases_3day = cases - cases_lag_3day) %>% 
+  arrange(state_ordered, date)
+
+trajectory_data
+```
+
+```
+## # A tibble: 971 x 11
+##    date       state fips  cases deaths cases_over20 min_cases_over20
+##    <date>     <chr> <chr> <dbl>  <dbl> <lgl>                   <int>
+##  1 2020-03-05 New … 36       22      0 TRUE                        5
+##  2 2020-03-06 New … 36       44      0 TRUE                        5
+##  3 2020-03-07 New … 36       89      0 TRUE                        5
+##  4 2020-03-08 New … 36      106      0 TRUE                        5
+##  5 2020-03-09 New … 36      142      0 TRUE                        5
+##  6 2020-03-10 New … 36      173      0 TRUE                        5
+##  7 2020-03-11 New … 36      217      0 TRUE                        5
+##  8 2020-03-12 New … 36      326      0 TRUE                        5
+##  9 2020-03-13 New … 36      421      0 TRUE                        5
+## 10 2020-03-14 New … 36      610      2 TRUE                        5
+## # … with 961 more rows, and 4 more variables: days_since_over20 <int>,
+## #   state_ordered <fct>, cases_lag_3day <dbl>, new_cases_3day <dbl>
+```
+
+Build the static plot
+
+```r
+trajectory_animated <- trajectory_data %>% 
+  ggplot(aes(x = cases, y = new_cases_3day, 
+             group = state_ordered)) +
+  geom_path(color = "gray") +
+  geom_point(color = "turquoise", size = .5) +
+  geom_text(aes(label = state_ordered), check_overlap = TRUE) +
+  scale_y_log10(breaks = scales::trans_breaks("log10",
+                                              function(x) 10^x),
+                labels = scales::comma) + 
+  scale_x_log10(breaks = scales::trans_breaks("log10",
+                                              function(x) 10^x),
+                labels = scales::comma) +
+  labs(x = "Total Cases", 
+       y = "New cases (in past 3 days)",
+       caption = "data source: https://github.com/nytimes/covid-19-data, \n inspired by: https://aatishb.com/covidtrends/") +
+  transition_reveal(date)
+```
+
+Animate
+
+```r
+animate(trajectory_animated, nframes = 200, duration = 30)
+```
+
+Save the animation
+
+```r
+anim_save("covid_trajectory.gif")
+```
+
+
+Reload the animation so we can see it here. 
+
+```r
+knitr::include_graphics("covid_trajectory.gif")
+```
+
+![](covid_trajectory.gif)<!-- -->
+
 
 
 

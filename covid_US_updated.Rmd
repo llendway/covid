@@ -189,7 +189,6 @@ knitr::include_graphics("covid_us_barplot.gif")
 
 Inspired by [Aatish Bhatia's](https://aatishb.com/covidtrends/) graph.
 
-
 ```{r}
 
 trajectory_data <- covid19_comp_date %>% 
@@ -205,24 +204,41 @@ trajectory_data <- covid19_comp_date %>%
 trajectory_data
 ```
 
+Build the static plot
 ```{r}
-trajectory_data %>% 
+trajectory_animated <- trajectory_data %>% 
   ggplot(aes(x = cases, y = new_cases_3day, 
              group = state_ordered)) +
-  geom_path() +
-   scale_y_log10(breaks = scales::trans_breaks("log10",
-                                               function(x) 10^x),
-                 labels = scales::comma) + 
-   scale_x_log10(breaks = scales::trans_breaks("log10",
-                                               function(x) 10^x),
-                 labels = scales::comma)
+  geom_path(color = "gray") +
+  geom_point(color = "turquoise", size = .5) +
+  geom_text(aes(label = state_ordered), check_overlap = TRUE) +
+  scale_y_log10(breaks = scales::trans_breaks("log10",
+                                              function(x) 10^x),
+                labels = scales::comma) + 
+  scale_x_log10(breaks = scales::trans_breaks("log10",
+                                              function(x) 10^x),
+                labels = scales::comma) +
+  labs(x = "Total Cases", 
+       y = "New cases (in past 3 days)",
+       caption = "data source: https://github.com/nytimes/covid-19-data, \n inspired by: https://aatishb.com/covidtrends/") +
+  transition_reveal(date)
+```
+
+Animate
+```{r, eval=FALSE}
+animate(trajectory_animated, nframes = 200, duration = 30)
+```
+
+Save the animation
+```{r, eval=FALSE}
+anim_save("covid_trajectory.gif")
 ```
 
 
-
-
-
-
+Reload the animation so we can see it here. 
+```{r}
+knitr::include_graphics("covid_trajectory.gif")
+```
 
 
 
