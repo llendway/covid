@@ -201,7 +201,7 @@ trajectory_data <- covid19_comp_date %>%
   mutate(new_cases_3day = cases - cases_lag_3day) %>% 
   arrange(state_ordered, date)
 
-trajectory_data
+#trajectory_data
 ```
 
 Build the static plot
