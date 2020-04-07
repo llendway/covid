@@ -214,25 +214,7 @@ trajectory_data <- covid19_comp_date %>%
   mutate(new_cases_3day = cases - cases_lag_3day) %>% 
   arrange(state_ordered, date)
 
-trajectory_data
-```
-
-```
-## # A tibble: 971 x 11
-##    date       state fips  cases deaths cases_over20 min_cases_over20
-##    <date>     <chr> <chr> <dbl>  <dbl> <lgl>                   <int>
-##  1 2020-03-05 New … 36       22      0 TRUE                        5
-##  2 2020-03-06 New … 36       44      0 TRUE                        5
-##  3 2020-03-07 New … 36       89      0 TRUE                        5
-##  4 2020-03-08 New … 36      106      0 TRUE                        5
-##  5 2020-03-09 New … 36      142      0 TRUE                        5
-##  6 2020-03-10 New … 36      173      0 TRUE                        5
-##  7 2020-03-11 New … 36      217      0 TRUE                        5
-##  8 2020-03-12 New … 36      326      0 TRUE                        5
-##  9 2020-03-13 New … 36      421      0 TRUE                        5
-## 10 2020-03-14 New … 36      610      2 TRUE                        5
-## # … with 961 more rows, and 4 more variables: days_since_over20 <int>,
-## #   state_ordered <fct>, cases_lag_3day <dbl>, new_cases_3day <dbl>
+#trajectory_data
 ```
 
 Build the static plot
@@ -252,6 +234,7 @@ trajectory_animated <- trajectory_data %>%
                 labels = scales::comma) +
   labs(x = "Total Cases", 
        y = "New cases (in past 3 days)",
+       title = 'Date: {frame_along}',
        caption = "data source: https://github.com/nytimes/covid-19-data, \n inspired by: https://aatishb.com/covidtrends/") +
   transition_reveal(date)
 ```
