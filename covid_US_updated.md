@@ -123,7 +123,7 @@ Add an animation that shows counts by state over time. First, do some cleaning o
 ```r
 covid_data_for_barplot <- covid19_comp_date %>% 
   ungroup() %>% 
-  filter(date >= mdy("03/05/2020")) %>% 
+  filter(date >= mdy("03/15/2020")) %>% 
   group_by(date) %>% 
   mutate(rank = row_number(desc(cases))) %>% 
   arrange(date, rank) %>% 
