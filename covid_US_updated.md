@@ -51,21 +51,22 @@ for_labels <- covid19_comp_date %>%
             max_days_since20 = max(days_since_over20))
 ```
 
+Map of cases over time arranged like the US map.
 
 ```r
 #test plots
 covid19_comp_date %>% 
-  ggplot(aes(x = days_since_over20, y = cases, group = state_ordered)) +
+  ggplot(aes(x = days_since_over20, y = cases)) +
   geom_line() + 
   coord_cartesian(xlim = c(-10, max_days)) +
-  geom_text(aes(x = max_days_since20, 
-                y = max_case, 
-                label = state_ordered),
-            color = "gray",
-            data = for_labels) +
   scale_y_log10() +
-#  facet_geo(~ state_ordered) #returns an error
-  facet_wrap(~ state_ordered)
+  facet_geo(~ state) 
+```
+
+![](covid_US_updated_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+
+```r
+#  facet_wrap(~ state_ordered)
 ```
 
 
@@ -181,7 +182,7 @@ covid_bar_anim <-
        subtitle  =  "Count of Covid-19 cases, top 10 states ",
        caption = "data source: https://github.com/nytimes/covid-19-data")
 
-animate(covid_bar_anim, nframes = 200, duration = 30)
+animate(covid_bar_anim, nframes = 200, duration = 30,)
 ```
 
 Save the animation.
@@ -202,6 +203,7 @@ knitr::include_graphics("covid_us_barplot.gif")
 
 Inspired by [Aatish Bhatia's](https://aatishb.com/covidtrends/) graph.
 
+First create the data needed to construct the graph:
 
 ```r
 trajectory_data <- covid19_comp_date %>% 
@@ -217,7 +219,29 @@ trajectory_data <- covid19_comp_date %>%
 #trajectory_data
 ```
 
-Build the static plot
+Static plot laid out on US map:
+
+```r
+trajectory_data %>% 
+  ggplot(aes(x = cases, y = new_cases_3day)) +
+  geom_path() +
+  facet_geo(~ state) +
+  scale_y_log10(breaks = scales::trans_breaks("log10",
+                                              function(x) 10^x),
+                labels = scales::comma) + 
+  scale_x_log10(breaks = scales::trans_breaks("log10",
+                                              function(x) 10^x),
+                labels = scales::comma) +
+  labs(x = "Total Cases", 
+       y = "New cases (in past 3 days)",
+       caption = "data source: https://github.com/nytimes/covid-19-data, \n inspired by: https://aatishb.com/covidtrends/")
+```
+
+![](covid_US_updated_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
+
+
+
+Build the static plot before adding animation.
 
 ```r
 trajectory_animated <- trajectory_data %>% 
