@@ -51,7 +51,7 @@ for_labels <- covid19_comp_date %>%
             max_days_since20 = max(days_since_over20))
 ```
 
-Map of cases over time arranged like the US map.
+Map of cumulative cases over time arranged like the US map.
 
 ```r
 #test plots
@@ -69,6 +69,26 @@ covid19_comp_date %>%
 #  facet_wrap(~ state_ordered)
 ```
 
+Map of daily cases over time arranged like the US map.
+
+```r
+#test plots
+covid19_comp_date %>% 
+  group_by(state) %>% 
+  mutate(cases_lag_1day = lag(cases, 1, order_by = date),
+         cases_lag_7day = lag(cases, 7, order_by = date)) %>% 
+  ungroup() %>% 
+  replace_na(list(cases_lag_1day = 0,
+                  cases_lag_7day = 0)) %>% 
+  mutate(new_cases = cases - cases_lag_1day,
+         avg_7day = (cases - cases_lag_7day)/7) %>% 
+  ggplot(aes(x = date, y = new_cases)) +
+  geom_line() + 
+  geom_line(aes(y = avg_7day), color = "red") +
+  facet_geo(~ state, scales = "free") 
+```
+
+![](covid_US_updated_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
 
 Create a `gganimate` plot that shows the number of cases over time for each state. 
 
@@ -237,7 +257,7 @@ trajectory_data %>%
        caption = "data source: https://github.com/nytimes/covid-19-data, \n inspired by: https://aatishb.com/covidtrends/")
 ```
 
-![](covid_US_updated_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
+![](covid_US_updated_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
 
 
 
